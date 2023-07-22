@@ -31,7 +31,7 @@ class Crawl:
         self.city = city.strip()
         self.current_time = timestamp if timestamp else time.strftime("%Y%m%d%H%M%S", time.localtime())
         self.area = area
-        self.data_dir = os.path.join(os.path.dirname(__file__),"data", city_map[self.city][0], self.current_time)
+        self.data_dir = os.path.join(os.path.dirname(__file__), "data", city_map[self.city][0], f"{area}_{self.current_time}")
         self.csv_path = os.path.join(self.data_dir, f"{self.current_time}.csv")
         self.download_txt = os.path.join(self.data_dir, f"{self.current_time}.txt")
         self.dataset = os.path.join(self.data_dir, f"{self.current_time}.db")
@@ -157,13 +157,12 @@ class Crawl:
         writer.writerow(fields)
         raw_region_urls = self.get_region_urls()  # 获取所有地区的链接
         region_urls = []
-        if self.area != 'all':
+        if self.area != '全部区域':
             for region_url in raw_region_urls:
                 if self.area == self.get_area_from_url(region_url):
                     region_urls.append(region_url)
         else:
             region_urls = raw_region_urls
-        # region_urls = ["https://sh.lianjia.com/ershoufang/daning/"]
         for region_url in region_urls:
             if region_url not in down_urls:
                 print(cnt, time.time() - begin_time, region_url, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
@@ -193,7 +192,3 @@ class Crawl:
     def run(self):
         self.env_init()
         self.crawl()
-
-
-if __name__ == "__main__":
-    Crawl(city="上海", timestamp="", area="静安").run()
