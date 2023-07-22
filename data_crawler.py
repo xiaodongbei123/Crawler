@@ -12,7 +12,7 @@ cookie = 'lianjia_ssid=5e209159-c1da-4e62-baeb-29b625ab36ba; lianjia_uuid=22d821
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.72 Safari/537.36',
     'Cookie': cookie.encode("utf-8").decode("latin1")
-}
+    }
 city_map = {
     "上海": ("shanghai", "https://sh.lianjia.com", "https://sh.lianjia.com/ershoufang/"),
     "北京": ("beijing", "https://bj.lianjia.com", "https://bj.lianjia.com/ershoufang/"), 
@@ -27,7 +27,7 @@ city_map = {
 
 
 class Crawl:
-    def __init__(self, city, timestamp, area):
+    def __init__(self, city="上海", timestamp="", area="全部区域"):
         self.city = city.strip()
         self.current_time = timestamp if timestamp else time.strftime("%Y%m%d%H%M%S", time.localtime())
         self.area = area
@@ -42,6 +42,10 @@ class Crawl:
     def env_init(self):
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
+
+    @staticmethod
+    def get_current_time():
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
     @staticmethod
     def get_page(url):
@@ -59,6 +63,38 @@ class Crawl:
             if a.has_attr("class") and "selected" in a.get_attribute_list("class"):
                 return a.get_text().strip()
         return ''
+
+    def get_block_from_url(self, url):
+        """获取网页所属板块"""
+        if ".html" not in url:
+            print(f"{self.get_current_time()} 查找所属板块时必须是二手房详情页")
+        html = self.get_page(url)
+        soup = BeautifulSoup(html, 'lxml')
+        ershoufang = soup.find('div', attrs={'class': 'fl l-txt'})
+        info_list = ershoufang.find_all('a')
+        if len(info_list) >= 4:
+            return ershoufang.find_all('a')[3].get_text().replace('二手房', '')
+        return ''
+
+    def get_all_blocks_from_area(self, url, area):
+        block_list = []
+        html = self.get_page(url)
+        soup = BeautifulSoup(html, 'lxml')
+        ershoufang = soup.find('div', attrs={'data-role': 'ershoufang'})
+        for a in ershoufang.find_all('div')[1].find_all('a'):
+            if self.get_area_from_url(self.host + a['href']) == area:
+                block_list.append(a.get_text().strip())
+        return block_list
+
+    def get_all_areas_from_city(self):
+        area_list = []
+        html = self.get_page(self.esf_url)
+        soup = BeautifulSoup(html, 'lxml')
+        ershoufang = soup.find('div', attrs={'data-role': 'ershoufang'})
+        for a in ershoufang.find_all('div')[0].find_all('a'):
+            if a.get_text != "上海周边":
+                area_list.append(a.get_text().strip())
+        return area_list
 
     @staticmethod
     def extract_info(html, district, block):
@@ -90,7 +126,7 @@ class Crawl:
                 data.append([district, block, title, url, house_type, area, direction, floor, decoration, residence,
                             region, total_price, univalence, build_time, release_time, watch, else_info])
             except Exception as e:
-                print('extract_info: ', e)
+                print(f'{self.get_current_time()} extract_info: {e}')
         return data
 
     def get_region_urls(self):
@@ -139,17 +175,16 @@ class Crawl:
             ]
         csvf = open(self.csv_path, 'a', newline='', encoding='gb18030')
         begin_time = time.time()  # 程序开始运行时间
-        cnt = 0  # 记录房源数量
+        cnt = 0  # 记录房源所在板块数量
         down_urls = []  # 从日志文件中获取已完成的链接
         if os.path.exists(self.download_txt):
-            cnt = 0
-            print('以下区域已经被爬过:')
+            print(f'{self.get_current_time()} 以下板块已经被爬过:')
             with open(self.download_txt, 'r', encoding='utf-8') as f:
                 for line in f.read().splitlines():
                     line = line.strip()
                     if line:
                         cnt += 1
-                        print(f'{cnt} {line}')
+                        print(f'{self.get_current_time()} {cnt}: {line}')
                         down_urls.append(line)
         # 日志文件，记录已抓取的子区域链接，便于恢复爬虫
         logf = open(self.download_txt, 'a', encoding='utf-8')
@@ -162,32 +197,39 @@ class Crawl:
                 if self.area == self.get_area_from_url(region_url):
                     region_urls.append(region_url)
         else:
-            region_urls = raw_region_urls
+            for region_url in raw_region_urls:
+                if self.get_area_from_url(region_url) != "上海周边":
+                    region_urls.append(region_url)
+        total_num = len(region_urls)
         for region_url in region_urls:
             if region_url not in down_urls:
-                print(cnt, time.time() - begin_time, region_url, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+                cnt += 1
+                current_area = self.get_area_from_url(region_url)
+                exe_time = round(int((time.time() - begin_time))/60, 2)
+                print(f'{self.get_current_time()} 总板块数: {total_num}, 当前在爬第 {cnt} 个板块, 板块所在区域：{current_area}')
+                print(f'{self.get_current_time()} 板块链接: {region_url}, 已执行时间：{exe_time} 分钟')
                 for page in range(1, 101):
-                    print(f'{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())} 当前在爬第 {page} 页')
+                    print(f'{self.get_current_time()} 当前在爬第 {page} 页')
                     try:
                         area = self.get_area_from_url(region_url)
                         url = region_url + 'pg%s/' % page  # 构造链接
                         html = self.get_page(url)
                         data = self.extract_info(html, self.city, area)
                         if data:
-                            cnt += len(data)
                             writer.writerows(data)
                             self.save_data_to_dataset(data)
                         else:
                             break  # 若未获取到数据，说明已到达最后一页，退出当前循环
                     except AttributeError:
-                        print("爬虫已到达最后一页，退出当前循环，开始获取下一区域数据")
+                        print(f"{self.get_current_time()} 爬虫已到达最后一页，退出当前循环，开始获取下一区域数据")
                         break
                     except Exception as e:
-                        print("爬虫发生错误: ", e)
+                        print(f"{self.get_current_time()} 爬虫发生错误: ", e)
                         break
                 logf.write(region_url + '\n')
         csvf.close()
         logf.close()
+        print(f"{self.get_current_time()} 爬虫结束, 共耗时：{round(int((time.time() - begin_time))/60, 2)} 分钟")
 
     def run(self):
         self.env_init()

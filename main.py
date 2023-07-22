@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import argparse
 
 from data_crawler import Crawl
@@ -22,31 +23,45 @@ area_map = {
 class Crawler:
     def __init__(self, city, timestamp, area, operation, dataset):
         self.city = city
-        self.timestamp = timestamp
+        self.timestamp = timestamp if timestamp else time.strftime("%Y%m%d%H%M%S", time.localtime())
         self.area = area
         self.operation = operation
         self.crawler = Crawl(city=city, timestamp=timestamp, area=area)
         self.dataset = dataset
         self.env_init()
-    
+
     def env_init(self):
         if (self.operation == "graph") and (not self.dataset):
             print("Operation is graph but dataset is None")
             sys.exit(1)
 
+    def display_all_area_data(self, grapher):
+        grapher.display_house_num_from_diff_area()
+        for area in self.crawler.get_all_areas_from_city():
+            grapher.display_house_num_from_diff_block(area)
+            grapher.display_house_unit_price_from_diff_block(area)
+
+    def display_specify_area_data(self, grapher, area):
+        grapher.display_house_num_from_diff_block(area)
+        grapher.display_house_unit_price_from_diff_block(area)
+
+    def graph_run(self, dataset):
+        if os.path.exists(dataset):
+            self.grapher = Grapher(dataset=dataset)
+            if self.area == "全部区域":
+                self.display_all_area_data(self.grapher)
+            else:
+                self.display_specify_area_data(self.grapher, self.area)
+            self.grapher.teardown()
+        else:
+            print(f"{dataset} is not existed!")
+
     def run(self):
         if self.operation == "crawl":
-            print("")
             self.crawler.run()
-        elif self.operation == "parse":
-            pass
+            # self.graph_run(self.crawler.dataset)
         elif self.operation == "graph":
-            if os.path.exists(self.dataset):
-                self.grapher = Grapher(dataset=self.dataset)
-                self.grapher.display_house_num_from_diff_block()
-                self.grapher.display_house_unit_price_from_diff_block()
-            else:
-                print(f"{self.dataset} is not existed!")
+            self.graph_run(self.dataset)
 
 
 if __name__ == "__main__":
@@ -83,7 +98,7 @@ if __name__ == "__main__":
         dest="operation",
         type=str,
         default="crawl",
-        choices=["crawl", "parse", "graph"],
+        choices=["crawl", "graph"],
         help="Specify operation to run, default crawl data"
         )
     parser.add_argument(

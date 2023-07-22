@@ -7,12 +7,19 @@ class Parser:
         self.conn = sqlite3.connect(self.dataset)
         self.cursor = self.conn.cursor()
 
-    def get_table_from_dataset(self):
+    def get_all_tabls_from_dataset(self):
         table_list = []
         self.cursor.execute("select name from sqlite_master where type='table' order by name")
         for row in self.cursor.fetchall():
             if row:
                 table_list.append(row[0])
+        return table_list
+
+    def get_specify_table_from_dataset(self, area):
+        table_list = []
+        for table in self.get_all_tabls_from_dataset():
+            if self.get_area_from_table(table) == area:
+                table_list.append(table)
         return table_list
 
     def get_data_from_table(self, table):
