@@ -59,7 +59,7 @@ class Crawler:
     def run(self):
         if self.operation == "crawl":
             self.crawler.run()
-            # self.graph_run(self.crawler.dataset)
+            self.graph_run(self.crawler.dataset)
         elif self.operation == "graph":
             self.graph_run(self.dataset)
 

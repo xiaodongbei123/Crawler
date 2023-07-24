@@ -68,7 +68,7 @@ class Grapher:
         plt.xticks(x_axis, x_labels)
         plt.title(label=f"{area} {self.date} 挂牌量 {sum(block_dict.values())}")
         plt.bar_label(plot, label_type="edge")
-        plt.subplots_adjust(left=0.04, right=0.98)
+        plt.subplots_adjust(left=0.06, right=0.94)
         plt.savefig(os.path.join(self.dirname, f"{area}_{self.date}_挂牌量"))
         # plt.show()
 
@@ -104,7 +104,7 @@ class Grapher:
         plt.xticks(x_axis, x_labels)
         plt.title(label=f"{area} {self.date} 挂牌均价 {total_price//total_num if total_num != 0 else 0}")
         plt.bar_label(plot, label_type="edge")
-        plt.subplots_adjust(left=0.04, right=0.98)
+        plt.subplots_adjust(left=0.06, right=0.94)
         plt.savefig(os.path.join(self.dirname, f"{area}_{self.date}_挂牌均价"))
         # plt.show()
 
@@ -129,9 +129,9 @@ class Grapher:
         plt.figure(figsize=(12, 8))
         plot = plt.bar(x_axis, y_axis)
         plt.xticks(x_axis, x_labels)
-        plt.title(label=f"{sum(area_house_map.values())}")
+        plt.title(label=f"{self.crawl.city} {self.date} 挂牌量 {sum(area_house_map.values())}")
         plt.bar_label(plot, label_type="edge")
-        plt.subplots_adjust(left=0.04, right=0.98)
+        plt.subplots_adjust(left=0.06, right=0.94)
         plt.savefig(os.path.join(self.dirname, f"{self.crawl.city}_{self.date}_挂牌量"))
         # plt.show()
 
