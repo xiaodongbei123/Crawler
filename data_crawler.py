@@ -221,7 +221,7 @@ class Crawl:
                         else:
                             break  # 若未获取到数据，说明已到达最后一页，退出当前循环
                     except AttributeError:
-                        print(f"{self.get_current_time()} 爬虫已到达最后一页，退出当前循环，开始获取下一区域数据")
+                        print(f"{self.get_current_time()} 爬虫已到达最后一页，开始获取下一区域数据\n")
                         break
                     except Exception as e:
                         print(f"{self.get_current_time()} 爬虫发生错误: ", e)
