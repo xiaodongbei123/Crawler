@@ -34,7 +34,7 @@ city_area_map = {
 
 
 class Grapher:
-    def __init__(self, dataset):
+    def __init__(self, dataset, crawl=None):
         self.dataset = dataset
         self.parser = Parser(dataset=dataset)
         self.dirname = os.path.dirname(dataset)
@@ -133,6 +133,76 @@ class Grapher:
         plt.bar_label(plot, label_type="edge")
         plt.subplots_adjust(left=0.06, right=0.94)
         plt.savefig(os.path.join(self.dirname, f"{self.crawl.city}_{self.date}_挂牌量"))
+        # plt.show()
+
+    def get_specify_area_house_num(self, area, dataset):
+        grapher = Grapher(dataset=dataset)
+        table_list = grapher.parser.get_specify_table_from_dataset(area=area)
+        date = grapher.date
+        grapher.parser.teardown()
+        del grapher
+        return date, len(table_list)
+
+    def get_all_area_house_num(self, dataset):
+        grapher = Grapher(dataset=dataset)
+        table_list = grapher.parser.get_all_tabls_from_dataset()
+        date = grapher.date
+        grapher.parser.teardown()
+        del grapher
+        return date, len(table_list)
+
+    def display_house_num_tendency(self, dir_path):
+        data_list = []
+        house_map = {}
+        for dir_name in os.listdir(dir_path):
+            for file in os.listdir(os.path.join(dir_path, dir_name)):
+                if ".db" in file:
+                    data_list.append(os.path.join(dir_path, dir_name, file))
+        for file in data_list:
+            house_data = self.get_all_area_house_num(file)
+            house_map.update({house_data[0]: house_data[1]})
+
+        print(house_map)
+        x_labels, y_axis = zip(*sorted(house_map.items(), key=lambda x: int(x[0])))
+        x_axis = range(1, len(x_labels)+1)
+
+        plt.rcParams['font.sans-serif'] = ['KaiTi']
+        plt.rcParams['font.size'] = 13
+        plt.figure(figsize=(12, 8))
+        plot = plt.plot(x_axis, y_axis)
+        plt.xticks(x_axis, x_labels)
+        plt.title(label=f"{self.crawl.city}_{self.date}_挂牌量趋势")
+        plt.subplots_adjust(left=0.06, right=0.94)
+        for x, y in zip(x_axis, y_axis):
+            plt.text(x, y, y, ha="center", va="bottom")
+        plt.savefig(os.path.join(self.dirname, f"{self.crawl.city}_{self.date}_挂牌量趋势"))
+        # plt.show()
+
+    def display_specify_area_house_num_tendency(self, dir_path, area):
+        data_list = []
+        house_map = {}
+        for dir_name in os.listdir(dir_path):
+            for file in os.listdir(os.path.join(dir_path, dir_name)):
+                if ".db" in file:
+                    data_list.append(os.path.join(dir_path, dir_name, file))
+        for file in data_list:
+            house_data = self.get_specify_area_house_num(area, file)
+            house_map.update({house_data[0]: house_data[1]})
+
+        print(house_map)
+        x_labels, y_axis = zip(*sorted(house_map.items(), key=lambda x: int(x[0])))
+        x_axis = range(1, len(x_labels)+1)
+
+        plt.rcParams['font.sans-serif'] = ['KaiTi']
+        plt.rcParams['font.size'] = 13
+        plt.figure(figsize=(12, 8))
+        plot = plt.plot(x_axis, y_axis)
+        plt.xticks(x_axis, x_labels)
+        plt.title(label=f"{area}_{self.date}_挂牌量趋势")
+        plt.subplots_adjust(left=0.06, right=0.94)
+        for x, y in zip(x_axis, y_axis):
+            plt.text(x, y, y, ha="center", va="bottom")
+        plt.savefig(os.path.join(self.dirname, f"{area}_{self.date}_挂牌量趋势"))
         # plt.show()
 
     def run(self):

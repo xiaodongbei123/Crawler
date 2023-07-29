@@ -1,9 +1,11 @@
 # -*-coding:utf-8-*-
 import os
 import csv
+import sys
 import time
 import sqlite3
 import requests
+import threading
 
 from bs4 import BeautifulSoup
 
@@ -38,6 +40,7 @@ class Crawl:
         self.table_base_name = "date"
         self.host = city_map[self.city][1]
         self.esf_url = city_map[self.city][2]
+        self.get_url_flag = True
 
     def env_init(self):
         if not os.path.exists(self.data_dir):
@@ -147,6 +150,7 @@ class Crawl:
             ershoufang = soup.find('div', attrs={'data-role': 'ershoufang'})
             for a in ershoufang.find_all('div')[1].find_all('a'):
                 region_urls.add(host + a['href'])
+        self.get_url_flag = False
         return list(region_urls)
 
     # 数据存储到数据库
@@ -167,6 +171,15 @@ class Crawl:
         conn.commit()
         cursor.close()
         conn.close()
+
+    def print_setup_process(self):
+        cnt = 0
+        while self.get_url_flag:
+            cnt += 1
+            print(" " * 100, end="\r" )
+            print(f"{self.get_current_time()} 正在获取所有地区的链接, 请稍等{'.' * (cnt % 7)}", end="\r")
+            sys.stdout.flush()
+            time.sleep(0.5)
 
     def crawl(self):
         fields = [
@@ -190,6 +203,9 @@ class Crawl:
         logf = open(self.download_txt, 'a', encoding='utf-8')
         writer = csv.writer(csvf, delimiter=',')  # 以逗号分割
         writer.writerow(fields)
+        t_print = threading.Thread(target=self.print_setup_process)
+        t_print.setDaemon(True)
+        t_print.start()
         raw_region_urls = self.get_region_urls()  # 获取所有地区的链接
         region_urls = []
         if self.area != '全部区域':
