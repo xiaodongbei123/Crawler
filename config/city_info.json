@@ -1,0 +1,199 @@
+{
+    "上海": {
+        "name": "shanghai",
+        "host_url": "https://sh.lianjia.com",
+        "ershoufang_url": "https://sh.lianjia.com/ershoufang/",
+        "area": {
+            "浦东": "pudong",
+            "闵行": "minhang",
+            "宝山": "baoshan",
+            "徐汇": "xuhui",
+            "普陀": "putuo",
+            "杨浦": "yangpu",
+            "长宁": "changning",
+            "松江": "songjiang",
+            "嘉定": "jiading",
+            "黄浦": "huangpu",
+            "静安": "jingan",
+            "虹口": "hongkou",
+            "青浦": "qingpu",
+            "奉贤": "fengxian",
+            "金山": "jinshan",
+            "崇明": "chongming"
+        }
+    },
+    "北京": {
+        "name": "beijing",
+        "host_url": "https://bj.lianjia.com",
+        "ershoufang_url": "https://bj.lianjia.com/ershoufang/",
+        "area":{
+            "东城": "",
+            "西城": "",
+            "朝阳": "",
+            "海淀": "",
+            "丰台": "",
+            "石景山": "",
+            "通州": "",
+            "昌平": "",
+            "大兴": "",
+            "亦庄开发区": "",
+            "顺义": "",
+            "房山": "",
+            "门头沟": "",
+            "平谷": "",
+            "怀柔": "",
+            "密云": "",
+            "延庆": ""
+        }
+    },
+    "深圳": {
+        "name": "shenzhen",
+        "host_url": "https://sz.lianjia.com",
+        "ershoufang_url": "https://sz.lianjia.com/ershoufang/",
+        "area":{
+            "罗湖": "",
+            "福田": "",
+            "南山": "",
+            "盐田": "",
+            "宝安": "",
+            "龙岗": "",
+            "龙华": "",
+            "光明": "",
+            "坪山": "",
+            "大鹏新区": ""
+        }
+    },
+    "广州": {
+        "name": "guangzhou",
+        "host_url": "https://gz.lianjia.com",
+        "ershoufang_url": "https://gz.lianjia.com/ershoufang/",
+        "area": {
+            "天河": "",
+            "越秀": "",
+            "荔湾": "",
+            "海珠": "",
+            "番禺": "",
+            "白云": "",
+            "黄埔": "",
+            "从化": "",
+            "增城": "",
+            "花都": "",
+            "南沙": "",
+            "南海": "",
+            "顺德": ""
+        }
+    },
+    "杭州": {
+        "name": "hangzhou",
+        "host_url": "https://hz.lianjia.com",
+        "ershoufang_url": "https://hz.lianjia.com/ershoufang/",
+        "area": {
+            "西湖": "",
+            "钱塘": "",
+            "临平": "",
+            "下城": "",
+            "拱墅": "",
+            "上城": "",
+            "滨江": "",
+            "余杭": "",
+            "萧山": "",
+            "桐庐": "",
+            "淳安": "",
+            "建德": "",
+            "富阳": "",
+            "临安": ""
+        }
+    },
+    "成都": {
+        "name": "chengdu",
+        "host_url": "https://cd.lianjia.com",
+        "ershoufang_url": "https://cd.lianjia.com/ershoufang/",
+        "area": {
+            "锦江": "",
+            "青羊": "",
+            "武侯": "",
+            "高新": "",
+            "成华": "",
+            "金牛": "",
+            "天府新区": "",
+            "高新西": "",
+            "双流": "",
+            "温江": "",
+            "郫都": "",
+            "龙泉驿": "",
+            "新都": "",
+            "天府新区南区": "",
+            "青白江": "",
+            "都江堰": "",
+            "彭州": "",
+            "简阳": "",
+            "新津": "",
+            "崇州": "",
+            "大邑": "",
+            "金堂": "",
+            "蒲江": "",
+            "邛崃": ""
+        }
+    },
+    "武汉": {
+        "name": "wuhan",
+        "host_url": "https://wh.lianjia.com",
+        "ershoufang_url": "https://wh.lianjia.com/ershoufang/",
+        "area": {
+            "江岸": "",
+            "江汉": "",
+            "硚口": "",
+            "东西湖": "",
+            "武昌": "",
+            "青山": "",
+            "洪山": "",
+            "汉阳": "",
+            "东湖高新": "",
+            "江夏": "",
+            "蔡甸": "",
+            "黄陂": "",
+            "新洲": "",
+            "沌口开发区": "",
+            "汉南": ""
+        }
+    },
+    "合肥": {
+        "name": "hefei",
+        "host_url": "https://hf.lianjia.com",
+        "ershoufang_url": "https://hf.lianjia.com/ershoufang/",
+        "area": {
+            "包河": "",
+            "巢湖市": "",
+            "庐江县": "",
+            "空港经济示范区": "",
+            "蜀山": "",
+            "庐阳": "",
+            "瑶海": "",
+            "政务": "",
+            "滨湖新区": "",
+            "经开": "",
+            "高新": "",
+            "新站": "",
+            "肥东": "",
+            "肥西": "",
+            "长丰": ""
+        }
+    },
+    "大连": {
+        "name": "dalian",
+        "host_url": "https://dl.lianjia.com",
+        "ershoufang_url": "https://dl.lianjia.com/ershoufang/",
+        "area": {
+            "甘井子": "",
+            "沙河口": "",
+            "中山": "",
+            "西岗": "",
+            "高新园区": "",
+            "开发区": "",
+            "金州": "",
+            "旅顺口": "",
+            "普兰店": "",
+            "瓦房店": ""
+        }
+    }
+}
